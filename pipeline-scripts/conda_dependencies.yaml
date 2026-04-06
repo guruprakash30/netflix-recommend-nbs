@@ -1,0 +1,27 @@
+name: minimal
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.10
+  - pip
+  - numpy<2
+  - pandas
+  - setuptools
+  - wheel
+
+  - pip:
+      - torch==2.2.2
+      - torchvision==0.17.2
+
+      - transformers==4.38.2
+      - sentence-transformers==2.6.1
+      - sentencepiece>=0.1.99
+      - huggingface_hub
+      - tqdm
+
+      # Versions confirmed to exist from your own build logs
+      - azureml-core==1.61.0.post3
+      - azureml-dataset-runtime==1.61.0
+      - azureml-defaults==1.61.0

@@ -1,0 +1,26 @@
+name: cbf-inference-env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip:
+      # AzureML runtime
+      - azureml-defaults>=1.56
+ 
+      # Core ML stack
+      - torch==2.2.2
+      - numpy==1.26.4
+      - pandas==2.2.2
+ 
+      # HuggingFace stack (tokenizer + model for on-the-fly query encoding)
+      - transformers==4.40.2
+      - tokenizers==0.19.1
+      - huggingface-hub==0.23.0
+      - safetensors==0.4.3
+ 
+      # Needed by transformers / tokenizers
+      - regex
+      - filelock
+      - packaging
+      - tqdm

@@ -1,0 +1,34 @@
+name: netflix-recommend-cf-env-01
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - jupyter
+  - scikit-surprise
+  - pandas
+  - notebook
+  - jupyterlab
+  - pytorch
+  - transformers
+  - accelerate
+  - datasets
+  - evaluate
+prefix: C:\Users\gurup\anaconda3\envs\netflix-recommend-cf-env-01
+name: netflix-recommend-cf-env-01
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - jupyter
+  - scikit-surprise
+  - pandas
+  - notebook
+  - jupyterlab
+  - pytorch
+  - transformers
+  - accelerate
+  - datasets
+  - evaluate
+prefix: C:\Users\gurup\anaconda3\envs\netflix-recommend-cf-env-01

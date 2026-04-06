@@ -1,0 +1,5 @@
+# CSV data files (all folders)
+**/*.csv
+
+# Model artifacts folder
+**/model_artifacts/
