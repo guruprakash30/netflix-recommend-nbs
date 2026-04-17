@@ -34,6 +34,7 @@ class FileAnalysisContext:
     primary_filepath: str
     fetched_files: dict[str, str] = field(default_factory=dict)
     dropped_files: list[str] = field(default_factory=list)
+    not_found_files: list[str] = field(default_factory=list)
     token_budget_remaining: int = MAX_CONTEXT_TOKENS
     budget_hit: bool = False
 
@@ -71,7 +72,7 @@ def fetch_file(filepath: str, runtime) -> str:
         params={"ref": ctx.branch},
     )
     if resp.status_code != 200:
-        ctx.dropped_files.append(filepath)
+        ctx.not_found_files.append(filepath)  # was ctx.dropped_files
         return f"[NOT FOUND: {filepath} does not exist on branch {ctx.branch}]"
 
     content = base64.b64decode(resp.json()["content"]).decode("utf-8", errors="replace")
@@ -134,12 +135,18 @@ Token budget for related files: {MAX_CONTEXT_TOKENS} tokens, max {MAX_RELATED_FI
 
 ## Your task
 1. Read the diff hunk and the primary file content below.
-2. Use fetch_file to retrieve related files that are necessary to understand the change.
-   Only fetch files that are part of this repository's own source code —
-   do NOT fetch third-party packages, standard library modules, or any installed dependencies
-   (e.g. do not fetch requests, pydantic, langchain, os, re, or anything from site-packages).
-   Good candidates: other modules in this repo that this file imports from, schema files,
-   config files, callers of functions changed in the diff.
+2. Look at the import statements at the top of the primary file content.
+   Only call fetch_file for modules that are explicitly imported using
+   'import x' or 'from x import y' in that file AND look like local modules:
+   - Imports starting with a dot are always local (e.g. 'from . import tools').
+   - Imports starting with a multi-part dotted path are likely local
+     (e.g. 'from pr_review.models import X', 'from pr_review import tools').
+   - Single plain word imports like 'os', 'sys', 're', 'json', 'requests',
+     'pydantic', 'langchain', 'tiktoken' are installed packages — never fetch them.
+   If a name is used in the file but has no import statement at all,
+   do NOT try to find where it comes from — flag it as undefined in suggestions instead.
+   Never guess or invent filenames not directly in the import statements.
+   If no imports meet the above conditions, skip this step entirely and go to step 3.
 3. Stop fetching when you have enough context or when a tool response tells you to stop.
 4. Produce a PerFileAnalysis as your final structured output.
 
