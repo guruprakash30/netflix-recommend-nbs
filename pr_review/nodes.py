@@ -1,6 +1,7 @@
+from __future__ import annotations
 import os
 from langchain_openai import AzureChatOpenAI
-from __future__ import annotations
+
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
