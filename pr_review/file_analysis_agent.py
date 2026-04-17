@@ -19,7 +19,7 @@ from pr_review.models import ContextStatus, PerFileAnalysis
 
 MAX_CONTEXT_TOKENS = 20_000
 MAX_RELATED_FILES = 5
-_enc = tiktoken.encoding_for_model("gpt-4o")
+_enc = tiktoken.get_encoding("o200k_base")
 
 
 def _count_tokens(text: str) -> int:
