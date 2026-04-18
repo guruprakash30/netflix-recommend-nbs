@@ -1,6 +1,7 @@
+from __future__ import annotations
 import os
 from langchain_openai import AzureChatOpenAI
-from __future__ import annotations
+
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -154,22 +155,20 @@ def aggregate_results_node(state: PRReviewState) -> dict:
     }
 
 
-def handle_security_node(state: PRReviewState) -> dict:
-    for old in state.labels_applied:
-        tools.remove_label(state.repo, state.pr_number, old)
-    labels = []
+def handle_security_node(state: PRReviewState) -> None:
+    existing = tools.get_pr_security_labels(state.repo, state.pr_number)
+    for label in existing:
+        tools.remove_label(state.repo, state.pr_number, label)
     for issue in state.security_issues:
         label = f"security-{issue.severity}"
         tools.apply_label(state.repo, state.pr_number, label)
-        labels.append(label)
-    return {"labels_applied": labels}
 
 
 def post_review_node(state: PRReviewState) -> dict:
+    tools.delete_all_pr_comments(state.repo, state.pr_number)
     body = build_review_comment(state)
     comment_id = tools.post_review_comment(state.repo, state.pr_number, body)
     return {"review_comment_id": comment_id, "hitl_active": True}
-
 
 def auto_merge_node(state: PRReviewState) -> dict:
     tools.post_review_comment(state.repo, state.pr_number, build_lgtm_comment())

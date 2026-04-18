@@ -184,4 +184,3 @@ class PRReviewState(BaseModel):
     human_message: str = ""
 
     review_comment_id: int | None = None
-    labels_applied: list[str] = Field(default_factory=list)

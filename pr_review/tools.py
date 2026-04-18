@@ -54,6 +54,14 @@ def get_bot_comment(repo: str, pr_number: int) -> dict | None:
             return {"id": comment["id"], "body": comment["body"]}
     return None
 
+def delete_all_pr_comments(repo: str, pr_number: int) -> None:
+    url = f"{BASE}/repos/{repo}/issues/{pr_number}/comments"
+    comments = requests.get(url, headers=HEADERS, params={"per_page": 100}).json()
+    for comment in comments:
+        requests.delete(
+            f"{BASE}/repos/{repo}/issues/comments/{comment['id']}",
+            headers=HEADERS,
+        )
 
 def recover_prior_state(repo: str, pr_number: int) -> tuple[dict | None, int | None]:
     bot_comment = get_bot_comment(repo, pr_number)
@@ -67,6 +75,16 @@ LABEL_COLORS = {
     "security-medium": "e4e669",
     "security-low": "0075ca",
 }
+
+def get_pr_security_labels(repo: str, pr_number: int) -> list[str]:
+    resp = requests.get(
+        f"{BASE}/repos/{repo}/issues/{pr_number}/labels",
+        headers=HEADERS,
+    )
+    return [
+        l["name"] for l in resp.json()
+        if l["name"].startswith("security-")
+    ]
 
 
 def apply_label(repo: str, pr_number: int, label: str) -> None:
