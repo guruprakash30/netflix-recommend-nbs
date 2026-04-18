@@ -54,6 +54,15 @@ def get_bot_comment(repo: str, pr_number: int) -> dict | None:
             return {"id": comment["id"], "body": comment["body"]}
     return None
 
+def delete_all_bot_comments(repo: str, pr_number: int) -> None:
+    url = f"{BASE}/repos/{repo}/issues/{pr_number}/comments"
+    comments = requests.get(url, headers=HEADERS, params={"per_page": 100}).json()
+    for comment in comments:
+        if "<!-- ai-review-bot -->" in comment.get("body", ""):
+            requests.delete(
+                f"{BASE}/repos/{repo}/issues/comments/{comment['id']}",
+                headers=HEADERS,
+            )
 
 def recover_prior_state(repo: str, pr_number: int) -> tuple[dict | None, int | None]:
     bot_comment = get_bot_comment(repo, pr_number)

@@ -165,11 +165,8 @@ def handle_security_node(state: PRReviewState) -> None:
 
 
 def post_review_node(state: PRReviewState) -> dict:
+    tools.delete_all_bot_comments(state.repo, state.pr_number)
     body = build_review_comment(state)
-    existing = tools.get_bot_comment(state.repo, state.pr_number)
-    if existing:
-        tools.update_comment(state.repo, existing["id"], body)
-        return {"review_comment_id": existing["id"], "hitl_active": True}
     comment_id = tools.post_review_comment(state.repo, state.pr_number, body)
     return {"review_comment_id": comment_id, "hitl_active": True}
 
