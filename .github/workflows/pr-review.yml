@@ -2,7 +2,7 @@ name: AI PR Review
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize]
   issue_comment:
     types: [created]
 
@@ -32,7 +32,7 @@ jobs:
         if: github.event_name == 'issue_comment'
         run: |
           git fetch origin +refs/pull/${{ github.event.issue.number }}/head:refs/pull/${{ github.event.issue.number }}/head
-          git checkout refs/pull/${{ github.event.issue.number }}/head      
+          git checkout refs/pull/${{ github.event.issue.number }}/head
 
       - uses: actions/setup-python@v5
         with:
