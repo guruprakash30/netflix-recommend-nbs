@@ -32,14 +32,7 @@ jobs:
         if: github.event_name == 'issue_comment'
         run: |
           git fetch origin +refs/pull/${{ github.event.issue.number }}/head:refs/pull/${{ github.event.issue.number }}/head
-          git checkout refs/pull/${{ github.event.issue.number }}/head
-
-      - name: Debug checkout
-        run: |
-          echo "Current commit: $(git log -1 --format=%H)"
-          echo "Current branch: $(git branch --show-current)"
-          echo "nodes.py first 5 lines:"
-          head -5 pr_review/nodes.py          
+          git checkout refs/pull/${{ github.event.issue.number }}/head      
 
       - uses: actions/setup-python@v5
         with:

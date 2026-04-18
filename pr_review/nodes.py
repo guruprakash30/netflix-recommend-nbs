@@ -165,11 +165,10 @@ def handle_security_node(state: PRReviewState) -> None:
 
 
 def post_review_node(state: PRReviewState) -> dict:
-    tools.delete_all_bot_comments(state.repo, state.pr_number)
+    tools.delete_all_pr_comments(state.repo, state.pr_number)
     body = build_review_comment(state)
     comment_id = tools.post_review_comment(state.repo, state.pr_number, body)
     return {"review_comment_id": comment_id, "hitl_active": True}
-
 
 def auto_merge_node(state: PRReviewState) -> dict:
     tools.post_review_comment(state.repo, state.pr_number, build_lgtm_comment())
