@@ -28,6 +28,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout PR head branch on issue_comment
+        if: github.event_name == 'issue_comment'
+        run: |
+          git fetch origin +refs/pull/${{ github.event.issue.number }}/head:refs/pull/${{ github.event.issue.number }}/head
+          git checkout refs/pull/${{ github.event.issue.number }}/head
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
