@@ -68,6 +68,16 @@ LABEL_COLORS = {
     "security-low": "0075ca",
 }
 
+def get_pr_security_labels(repo: str, pr_number: int) -> list[str]:
+    resp = requests.get(
+        f"{BASE}/repos/{repo}/issues/{pr_number}/labels",
+        headers=HEADERS,
+    )
+    return [
+        l["name"] for l in resp.json()
+        if l["name"].startswith("security-")
+    ]
+
 
 def apply_label(repo: str, pr_number: int, label: str) -> None:
     requests.post(
